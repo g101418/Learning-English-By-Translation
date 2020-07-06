@@ -1,12 +1,14 @@
 '''
 @Author: Gao S
 @Date: 2020-07-06 17:22:08
-@LastEditTime: 2020-07-06 21:18:06
+@LastEditTime: 2020-07-06 22:01:54
 @Description: 
 @FilePath: /English-Translation/user_info.py
 '''
 
 from database import userInfoDb, userIdDb, corpusDb
+
+complexities = ['complex', 'subcomplex', 'medium', 'submedium', 'ease', 'permanent']
 
 class UserInfo(object):
     def __init__(self, user_id):
@@ -122,7 +124,42 @@ class UserInfo(object):
         else:
             self.user_info_dict['finish_history'][question_id].append(answer)
     
+    def get_history(self, question_id=None):
+        """得到答题历史
+        
+        Args:
+            question_id (list/dict, optional): 如果非空，则返回指定题目id的历史. Defaults to None.
+
+        Returns:
+            [type]: [description]
+        """
+        if question_id is not None:
+            if question_id in self.user_info_dict['finish_history']:
+                return self.user_info_dict['finish_history'][question_id]
+            else:
+                return None
+        else:
+            return self.user_info_dict['finish_history']
+    
+    def get_review_list(self, complexity=None):
+        """得到按复杂度排列的字典
+
+        Args:
+            complexity (str, optional): 复杂度. Defaults to None.
+
+        Returns:
+            dict/None: 返回按复杂度排列的字典，如果指定复杂度，但关键字错误，则返回None
+        """
+        if complexity is not None:
+            if complexity not in complexities:
+                return None
+            return self.user_info_dict['finish_id'][complexity]
+        else:
+            return self.user_info_dict['finish_id']
+    
     def write_dict(self):
+        """将user_info字典写入json文件
+        """
         userInfoDb.write_dict(self.__user_id, self.user_info_dict)
         
         

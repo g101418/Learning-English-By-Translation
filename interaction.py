@@ -1,7 +1,7 @@
 '''
 @Author: Gao S
 @Date: 2020-07-06 20:28:43
-@LastEditTime: 2020-07-06 21:27:25
+@LastEditTime: 2020-07-06 22:00:44
 @Description: 
 @FilePath: /English-Translation/interaction.py
 '''
@@ -9,7 +9,7 @@
 from user_info import UserInfo
 from database import userIdDb
 
-complexities = ['complex', 'subcomplex', 'medium', 'submedium', 'ease', 'permanent']
+from user_info import complexities
 
 if __name__ == '__main__':
     pass
