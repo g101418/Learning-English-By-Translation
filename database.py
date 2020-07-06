@@ -1,28 +1,37 @@
 '''
 @Author: Gao S
 @Date: 2020-07-06 08:49:36
-@LastEditTime: 2020-07-06 17:31:48
+@LastEditTime: 2020-07-06 20:09:32
 @Description: 
 @FilePath: /English-Translation/database.py
 '''
 import json
 import hashlib
-
+import os
+import logging
+import sqlite3 as sqlite
 
 class UserIdDB(object):
     """用户管理
     登录、注册等事宜
     """
     def __init__(self, user_id_db_filename='./db/user_id.json'):
+        """初始化
+
+        Args:
+            user_id_db_filename (str, optional): user_id.json路径. Defaults to './db/user_id.json'.
+        """
         super().__init__()
         self.__user_id_db_filename = user_id_db_filename
         try:
-            with open(user_id_db_filename, 'r') as f:
+            with open(self.__user_id_db_filename, 'r') as f:
                 self.__user_id_db = json.load(f)
         except FileNotFoundError as e:
-            print('找不到文件:', e.filename)
+            logging.error('找不到文件: ' + e.filename)
+            exit()
         except json.JSONDecodeError as e:
-            print('json文件数据格式错误:', e)
+            logging.error('json文件数据格式错误: ' + self.__user_id_db_filename)
+            exit()
                 
     # TODO 检查用户名的合规性
     # def compliance_checks(self):
@@ -48,7 +57,8 @@ class UserIdDB(object):
             with open(self.__user_id_db_filename, 'w') as f:
                 f.write(json.dumps(self.__user_id_db))
         except FileNotFoundError as e:
-            print('找不到文件:', e.filename)
+            logging.error('无法写入文件: ' + e.filename)
+            exit()
     
     def __check_id_exist(self, user_id):
         """检查用户名是否存在
@@ -173,68 +183,104 @@ class UserIdDB(object):
 
         return True, '登录成功'
     
-    def leave(self):
-        print('拜拜')
     
 # ! user_info应该写为分别以user_id挂名的文件
 class UserInfoDB(object):
     """处理用户信息
     答题记录等
     """
-    def __init__(self, user_info_db_filename='./db/user_info.json'):
-        super().__init__()
-        self.__user_info_db_filename = user_info_db_filename
-        try:
-            with open(user_info_db_filename, 'r') as f:
-                self.__user_info_db = json.load(f)
-        except FileNotFoundError as e:
-            print('找不到文件:', e.filename)
-        except json.JSONDecodeError as e:
-            print('json文件数据格式错误:', e)
-            
-    def write_user_info_db(self):
-        """将info字典写回文件
+    def __init__(self, user_info_db_path='./db/user_info/'):
+        """初始化
+
+        Args:
+            user_info_db_path (str, optional): user_info文件夹. Defaults to './db/user_info/'.
         """
-        try:
-            with open(self.user_info_db_filename, 'w') as f:
-                f.write(json.dumps(self.__user_info_db))
-        except FileNotFoundError as e:
-            print('找不到文件:', e.filename)
+        super().__init__()
+        self.__user_info_db_path = user_info_db_path
+        
             
-    # TODO 函数：得到对应user_id的字典
-    def get_dict(self, user_id):
-        if user_id not in self.__user_info_db:
-            return None, '记录中未包含该字典'
+    def get_dict(self, user_id, build_file=True):
+        """得到对应user_id的相关字典
         
-        return self.__user_info_db[user_id]
-    
-    def write_dict(self, user_id, user_dict, write_db=True):
-        self.__user_info_db[user_id] = user_dict
-        if write_db == True:
-            self.write_user_info_db()
+        Args:
+            user_id (str): 用户名/id
+            build_file (bool, optional): 是否在缺失文件时返回空字典. Defaults to False.
+            
+        Returns:
+            dict, str: 若非None，则返回字典，第二个返回值为描述
+        """
+        files = os.listdir(self.__user_info_db_path)
+        files = [f for f in files if f.endswith('.json') and f.startswith('user_id_')]
+        files = map(lambda x:os.path.splitext(x)[0].replace('user_id_', ''), files)
         
+        if user_id not in files:
+            if build_file == True:
+                return {}, '首次构造记录，为空'
+            else:
+                return None, '记录中未包含该字典'
+        
+        filename = self.__user_info_db_path+'user_id_'+user_id+'.json'
+        try:
+            with open(filename, 'r') as f:
+                user_info_db = json.load(f)
+        except FileNotFoundError as e:
+            logging.error('找不到文件: ' + e.filename)
+            exit()
+        except json.JSONDecodeError as e:
+            logging.error('json文件数据格式错误: ' + filename)
+            exit()
+        
+        return user_info_db, '返回该字典'
     
-    
-    # ! 以下应该在另一个class中处理 
-    # TODO 函数：得到用户所有历史题号
-    
-    # TODO 函数：学习得到题号，每次一个题
-    # TODO 函数：复习得到题号，每次一个题
-    
-    # TODO 函数：学习插入题号，每次一个题
-    # TODO 函数：复习修正题号，每次一个题
-    
-    # TODO 得到用户在某项上的历史回答
-    # TODO 艾宾浩斯
-    # TODO 得到用户已经学习的列表
-    # TODO 得到用户
-    # TODO 学习列表：根据艾宾浩斯等方式得到
-    # TODO 学习任务，每日多少多少等
+    def write_dict(self, user_id, user_dict):
+        filename = self.__user_info_db_path+'user_id_'+user_id+'.json'
+        try:
+            with open(filename, 'w') as f:
+                f.write(json.dumps(user_dict))
+        except FileNotFoundError as e:
+            logging.error('无法写入文件: ' + e.filename)
+            exit()
+        
+
 
 class CorpusDB(object):
     # 平行语料库用SQLite管理
-    pass
+    def __init__(self, corpus_db_filename='./db/corpus.db'):
+        super().__init__()
+        self.__corpus_db_filename = corpus_db_filename
+        self.build_connection()
 
+    def get_corpus(self, question_id):
+        """得到中英文语料
+
+        Args:
+            question_id (str): 语料id
+
+        Returns:
+            str, str: 中文句子和英文句子
+        """
+        cur = self.connection.cursor()
+        cur.execute("SELECT * FROM corpus where id={}".format(question_id))
+        row = cur.fetchone()
+        
+        # TODO 错误处理
+        
+        return row[1], row[2]
+    
+    def close_connection(self):
+        """断开与数据库的连接
+        """
+        self.connection.close()
+    
+    def build_connection(self):
+        """与数据库建立连接
+        """
+        self.connection = sqlite.connect(self.__corpus_db_filename)
+    
+    # TODO 结束时断开连接
+userIdDb = UserIdDB()
+userInfoDb = UserInfoDB()
+corpusDb = CorpusDB()
 
 if __name__ == '__main__':
     pass
