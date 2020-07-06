@@ -1,7 +1,7 @@
 <!--
  * @Author: Gao S
  * @Date: 2020-07-06 21:35:03
- * @LastEditTime: 2020-07-06 21:46:18
+ * @LastEditTime: 2020-07-06 21:48:09
  * @Description: 
  * @FilePath: /English-Translation/README.md
 --> 
@@ -23,4 +23,4 @@ python3 interaction.py
 ![运行截图](https://github.com/g101418/Learning-English-By-Translation/blob/master/%E6%88%AA%E5%9B%BE.jpg)
 
 
-![user_info结构图](https://github.com/g101418/Learning-English-By-Translation/blob/master/user_info_json.jpg)
+![user_info结构图](https://github.com/g101418/Learning-English-By-Translation/blob/master/user_info_json.png)
