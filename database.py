@@ -1,7 +1,7 @@
 '''
 @Author: Gao S
 @Date: 2020-07-06 08:49:36
-@LastEditTime: 2020-07-06 20:09:32
+@LastEditTime: 2020-07-06 21:16:48
 @Description: 
 @FilePath: /English-Translation/database.py
 '''
@@ -249,6 +249,14 @@ class CorpusDB(object):
         super().__init__()
         self.__corpus_db_filename = corpus_db_filename
         self.build_connection()
+        self.__corpus_len = self.get_corpus_len()
+
+    def get_corpus_len(self):
+        cur = self.connection.cursor()
+        cur.execute("SELECT count(id) from corpus")
+        row = cur.fetchone()
+        
+        return row[0]
 
     def get_corpus(self, question_id):
         """得到中英文语料
@@ -259,6 +267,9 @@ class CorpusDB(object):
         Returns:
             str, str: 中文句子和英文句子
         """
+        if int(question_id) > self.__corpus_len:
+            return None, None
+        
         cur = self.connection.cursor()
         cur.execute("SELECT * FROM corpus where id={}".format(question_id))
         row = cur.fetchone()
