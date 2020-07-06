@@ -1,7 +1,7 @@
 '''
 @Author: Gao S
 @Date: 2020-07-06 08:49:36
-@LastEditTime: 2020-07-06 13:40:30
+@LastEditTime: 2020-07-06 17:31:48
 @Description: 
 @FilePath: /English-Translation/database.py
 '''
@@ -44,8 +44,11 @@ class UserIdDB(object):
     def __write_user_id_db(self):
         """将id字典写回文件
         """
-        with open(self.__user_id_db_filename, 'w') as f:
-            f.write(json.dumps(self.__user_id_db))
+        try:
+            with open(self.__user_id_db_filename, 'w') as f:
+                f.write(json.dumps(self.__user_id_db))
+        except FileNotFoundError as e:
+            print('找不到文件:', e.filename)
     
     def __check_id_exist(self, user_id):
         """检查用户名是否存在
@@ -169,7 +172,11 @@ class UserIdDB(object):
             return False, check_msg
 
         return True, '登录成功'
-        
+    
+    def leave(self):
+        print('拜拜')
+    
+# ! user_info应该写为分别以user_id挂名的文件
 class UserInfoDB(object):
     """处理用户信息
     答题记录等
@@ -184,7 +191,50 @@ class UserInfoDB(object):
             print('找不到文件:', e.filename)
         except json.JSONDecodeError as e:
             print('json文件数据格式错误:', e)
+            
+    def write_user_info_db(self):
+        """将info字典写回文件
+        """
+        try:
+            with open(self.user_info_db_filename, 'w') as f:
+                f.write(json.dumps(self.__user_info_db))
+        except FileNotFoundError as e:
+            print('找不到文件:', e.filename)
+            
+    # TODO 函数：得到对应user_id的字典
+    def get_dict(self, user_id):
+        if user_id not in self.__user_info_db:
+            return None, '记录中未包含该字典'
+        
+        return self.__user_info_db[user_id]
+    
+    def write_dict(self, user_id, user_dict, write_db=True):
+        self.__user_info_db[user_id] = user_dict
+        if write_db == True:
+            self.write_user_info_db()
+        
+    
+    
+    # ! 以下应该在另一个class中处理 
+    # TODO 函数：得到用户所有历史题号
+    
+    # TODO 函数：学习得到题号，每次一个题
+    # TODO 函数：复习得到题号，每次一个题
+    
+    # TODO 函数：学习插入题号，每次一个题
+    # TODO 函数：复习修正题号，每次一个题
+    
+    # TODO 得到用户在某项上的历史回答
+    # TODO 艾宾浩斯
+    # TODO 得到用户已经学习的列表
+    # TODO 得到用户
+    # TODO 学习列表：根据艾宾浩斯等方式得到
+    # TODO 学习任务，每日多少多少等
 
 class CorpusDB(object):
     # 平行语料库用SQLite管理
+    pass
+
+
+if __name__ == '__main__':
     pass
