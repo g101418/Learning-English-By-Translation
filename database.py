@@ -1,7 +1,7 @@
 '''
 @Author: Gao S
 @Date: 2020-07-06 08:49:36
-@LastEditTime: 2020-07-06 21:16:48
+@LastEditTime: 2020-07-09 16:08:21
 @Description: 
 @FilePath: /English-Translation/database.py
 '''
@@ -10,6 +10,8 @@ import hashlib
 import os
 import logging
 import sqlite3 as sqlite
+import sys
+import re
 
 class UserIdDB(object):
     """用户管理
@@ -28,16 +30,58 @@ class UserIdDB(object):
                 self.__user_id_db = json.load(f)
         except FileNotFoundError as e:
             logging.error('找不到文件: ' + e.filename)
-            exit()
+            sys.exit(1)
         except json.JSONDecodeError as e:
             logging.error('json文件数据格式错误: ' + self.__user_id_db_filename)
-            exit()
+            sys.exit(1)
                 
-    # TODO 检查用户名的合规性
-    # def compliance_checks(self):
-    #     
-    #     pass
-    
+    def user_id_format(self, user_id):
+        """检查用户名合规性
+
+        Args:
+            user_id (str): 用户名/id
+
+        Returns:
+            bool, str: 是否匹配到，第二个是描述
+        """
+        NUM_LETTER = re.compile("^(?!\d+$)[\da-zA-Z_]+$")   #数字和字母组合，不允许纯数字
+        FIRST_LETTER = re.compile("^[a-zA-Z]")  #只能以字母开头
+        length = len(user_id)
+        
+        if length >= 5:
+            if length <= 20:
+                if NUM_LETTER.search(user_id):
+                    if FIRST_LETTER.search(user_id):
+                        return True, '用户名符合规范'
+                    else:
+                        return False, '应该以字母开头'
+                else:
+                    return False, '包含非法字符'
+            else:
+                return False, '长度过长'
+        else:
+            return False, '长度过短'
+        
+    def user_password_format(self, user_password):
+        """检查密码合规性
+
+        Args:
+            user_password (str): 密码
+
+        Returns:
+            bool, str: 是否匹配到，第二个是描述
+        """
+        length = len(user_password)
+        
+        if length >= 5:
+            if length <= 20:
+                return True, '密码符合规范'
+            else:
+                return False, '密码过长'
+        else:
+            return False, '密码过短'
+        
+        
     def __get_password_hex(self, user_password):
         """得到密码的MD5表示
 
@@ -58,7 +102,7 @@ class UserIdDB(object):
                 f.write(json.dumps(self.__user_id_db))
         except FileNotFoundError as e:
             logging.error('无法写入文件: ' + e.filename)
-            exit()
+            sys.exit(1)
     
     def __check_id_exist(self, user_id):
         """检查用户名是否存在
@@ -85,7 +129,6 @@ class UserIdDB(object):
         Returns:
             (Bool, str): True为匹配，False不匹配，第二个返回值为描述
         """
-        # TODO 检查用户用户名密码...
         if check_id_exist == True:
             check_id_bool, check_id_msg = self.__check_id_exist(user_id)
             if check_id_bool == False:
@@ -109,7 +152,14 @@ class UserIdDB(object):
             (Bool, str): True为注册成功，第二个返回值为描述
         """
         # 处理id
-        # TODO 检查用户名合规性
+        # 检查用户名合规性
+        check_id_bool, check_id_msg = self.user_id_format(user_id)
+        if check_id_bool == False:
+            return False, check_id_msg
+        # 检查密码合规性
+        check_id_bool, check_id_msg = self.user_password_format(user_password)
+        if check_id_bool == False:
+            return False, check_id_msg
         
         check_id_bool, check_id_msg = self.__check_id_exist(user_id)
         if check_id_bool == True:
@@ -153,6 +203,10 @@ class UserIdDB(object):
         Returns:
             (Bool, str): True为修改密码成功，第二个返回值为描述
         """
+        check_id_bool, check_id_msg = self.user_password_format(user_password_new)
+        if check_id_bool == False:
+            return False, check_id_msg
+        
         # 检查用户名、密码相关
         check_bool, check_msg = self.__check_user_id_password(user_id, user_password_old, check_id_exist=True)
         if check_bool == False:
@@ -183,8 +237,7 @@ class UserIdDB(object):
 
         return True, '登录成功'
     
-    
-# ! user_info应该写为分别以user_id挂名的文件
+
 class UserInfoDB(object):
     """处理用户信息
     答题记录等
@@ -201,7 +254,7 @@ class UserInfoDB(object):
             
     def get_dict(self, user_id, build_file=True):
         """得到对应user_id的相关字典
-        
+        调用前确保用户已经登录
         Args:
             user_id (str): 用户名/id
             build_file (bool, optional): 是否在缺失文件时返回空字典. Defaults to False.
@@ -225,10 +278,10 @@ class UserInfoDB(object):
                 user_info_db = json.load(f)
         except FileNotFoundError as e:
             logging.error('找不到文件: ' + e.filename)
-            exit()
+            sys.exit(1)
         except json.JSONDecodeError as e:
             logging.error('json文件数据格式错误: ' + filename)
-            exit()
+            sys.exit(1)
         
         return user_info_db, '返回该字典'
     
@@ -239,7 +292,7 @@ class UserInfoDB(object):
                 f.write(json.dumps(user_dict))
         except FileNotFoundError as e:
             logging.error('无法写入文件: ' + e.filename)
-            exit()
+            sys.exit(1)
         
 
 
@@ -250,6 +303,9 @@ class CorpusDB(object):
         self.__corpus_db_filename = corpus_db_filename
         self.build_connection()
         self.__corpus_len = self.get_corpus_len()
+    
+    def __del__(self):
+        self.close_connection()
 
     def get_corpus_len(self):
         cur = self.connection.cursor()
@@ -265,16 +321,19 @@ class CorpusDB(object):
             question_id (str): 语料id
 
         Returns:
-            str, str: 中文句子和英文句子
+            str, str: 中文句子和英文句子，为空或者出错返回None
         """
         if int(question_id) > self.__corpus_len:
+            logging.error('数据库检索时题号超出总长: ' + str(question_id))
             return None, None
         
-        cur = self.connection.cursor()
-        cur.execute("SELECT * FROM corpus where id={}".format(question_id))
-        row = cur.fetchone()
-        
-        # TODO 错误处理
+        try:
+            cur = self.connection.cursor()
+            cur.execute("SELECT * FROM corpus where id={}".format(question_id))
+            row = cur.fetchone()
+        except sqlite.DatabaseError as e:
+            logging.error('数据库检索错误: ' + str(e))
+            return None, None
         
         return row[1], row[2]
     
@@ -286,9 +345,13 @@ class CorpusDB(object):
     def build_connection(self):
         """与数据库建立连接
         """
-        self.connection = sqlite.connect(self.__corpus_db_filename)
+        try:
+            self.connection = sqlite.connect(self.__corpus_db_filename)
+        except sqlite.Error as e:
+            logging.error('数据库错误: ' + str(e))
+            sys.exit(1)
     
-    # TODO 结束时断开连接
+    
 userIdDb = UserIdDB()
 userInfoDb = UserInfoDB()
 corpusDb = CorpusDB()
