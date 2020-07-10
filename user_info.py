@@ -1,7 +1,7 @@
 '''
 @Author: Gao S
 @Date: 2020-07-06 17:22:08
-@LastEditTime: 2020-07-09 15:39:48
+@LastEditTime: 2020-07-11 00:15:41
 @Description: 
 @FilePath: /English-Translation/user_info.py
 '''
@@ -33,8 +33,8 @@ class UserInfo(object):
                                                 'permanent':[]}
         if 'finish_history' not in self.user_info_dict:
             self.user_info_dict['finish_history'] = {}
-        if 'pass_id' not in self.user_info_dict:
-            self.user_info_dict['pass_id'] = []
+        if 'skip_id' not in self.user_info_dict:
+            self.user_info_dict['skip_id'] = []
             
         self.__corpus_len = corpusDb.get_corpus_len()
         
@@ -56,7 +56,7 @@ class UserInfo(object):
             list: 所有做过的题目id
         """
         question_id_list = list(self.user_info_dict['finish_history'].keys())
-        question_id_list = question_id_list + self.user_info_dict['pass_id']
+        question_id_list = question_id_list + self.user_info_dict['skip_id']
         
         return question_id_list
         
@@ -73,14 +73,18 @@ class UserInfo(object):
 
         return max_question_id
     
-    def insert_pass(self, question_id):
+    def insert_skip(self, question_id, complexity=None):
         """用户跳过问题后插入user_info
-        
+
         Args:
             question_id (str): 题目id
+            complexity (str optional): 不为空时，是复习skip插入. Defaults to None.
         """
         # TODO 错误处理
-        self.user_info_dict['pass_id'].append(question_id)
+        if complexity is None:
+            self.user_info_dict['skip_id'].append(question_id)
+        else:
+            self.user_info_dict['finish_id'][complexity].append(question_id)
     
     def get_new_question(self):
         """得到新题目，每次一个

@@ -1,7 +1,7 @@
 '''
 @Author: Gao S
 @Date: 2020-07-06 08:49:36
-@LastEditTime: 2020-07-09 16:08:21
+@LastEditTime: 2020-07-09 17:29:22
 @Description: 
 @FilePath: /English-Translation/database.py
 '''
@@ -358,3 +358,6 @@ corpusDb = CorpusDB()
 
 if __name__ == '__main__':
     pass
+
+
+# TODO 平行语料数据库的构建
