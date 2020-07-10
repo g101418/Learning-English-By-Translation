@@ -1,7 +1,7 @@
 '''
 @Author: Gao S
 @Date: 2020-07-06 08:49:36
-@LastEditTime: 2020-07-09 17:29:22
+@LastEditTime: 2020-07-11 00:42:39
 @Description: 
 @FilePath: /English-Translation/database.py
 '''
@@ -13,11 +13,15 @@ import sqlite3 as sqlite
 import sys
 import re
 
+import configparser
+config = configparser.ConfigParser()
+config.read('./config.ini')
+
 class UserIdDB(object):
     """用户管理
     登录、注册等事宜
     """
-    def __init__(self, user_id_db_filename='./db/user_id.json'):
+    def __init__(self, user_id_db_filename=config['DB']['user_id_db_filename']):
         """初始化
 
         Args:
@@ -242,7 +246,7 @@ class UserInfoDB(object):
     """处理用户信息
     答题记录等
     """
-    def __init__(self, user_info_db_path='./db/user_info/'):
+    def __init__(self, user_info_db_path=config['DB']['user_info_db_path']):
         """初始化
 
         Args:
@@ -298,7 +302,7 @@ class UserInfoDB(object):
 
 class CorpusDB(object):
     # 平行语料库用SQLite管理
-    def __init__(self, corpus_db_filename='./db/corpus.db'):
+    def __init__(self, corpus_db_filename=config['DB']['corpus_db_filename']):
         super().__init__()
         self.__corpus_db_filename = corpus_db_filename
         self.build_connection()

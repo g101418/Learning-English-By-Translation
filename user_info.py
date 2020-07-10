@@ -1,7 +1,7 @@
 '''
 @Author: Gao S
 @Date: 2020-07-06 17:22:08
-@LastEditTime: 2020-07-11 00:15:41
+@LastEditTime: 2020-07-11 00:32:08
 @Description: 
 @FilePath: /English-Translation/user_info.py
 '''
@@ -194,10 +194,10 @@ class UserInfo(object):
             return self.user_info_dict['finish_history']
     
     def get_review_list(self, complexity=None):
-        """得到按复杂度排列的字典
+        """得到按复杂度排列的复习的字典
 
         Args:
-            complexity (str, optional): 复杂度. Defaults to None.
+            complexity (str, optional): 复杂度，被指定时返回指定list. Defaults to None.
 
         Returns:
             dict/None: 返回按复杂度排列的字典，如果指定复杂度，但关键字错误，则返回None
