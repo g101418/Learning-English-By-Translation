@@ -1,7 +1,7 @@
 <!--
  * @Author: Gao S
  * @Date: 2020-07-06 21:35:03
- * @LastEditTime: 2020-07-11 00:24:47
+ * @LastEditTime: 2020-07-11 00:29:21
  * @Description: 
  * @FilePath: /English-Translation/README.md
 --> 
@@ -20,7 +20,7 @@ python3 interaction.py
 
 随后根据提醒操作
 
-![运行截图](https://github.com/g101418/Learning-English-By-Translation/blob/master/%E6%88%AA%E5%9B%BE.jpg)
+![运行截图](https://github.com/g101418/Learning-English-By-Translation/blob/master/%E6%88%AA%E5%9B%BE.png)
 
 
 ![user_info结构图](https://github.com/g101418/Learning-English-By-Translation/blob/master/user_info_json.png)
