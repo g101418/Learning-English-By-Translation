@@ -3,15 +3,25 @@
 
 ## 使用
 
-通过
+### 初始化
+
+```shell
+python3 setup_db.py
+```
+
+在 setup_db.py 文件中，根据需要调用insert_corpus_many()函数，将语料写入数据库中，格式可参考代码。
+
+> 中英平行语料库可见：https://github.com/brightmart/nlp_chinese_corpus
+
+### 使用
 
 ```shell
 python3 interaction.py
 ```
 
-运行程序
-
 随后根据提醒操作
+
+
 
 ![运行截图](https://github.com/g101418/Learning-English-By-Translation/blob/master/images/screenshot.png)
 
@@ -30,7 +40,7 @@ python3 interaction.py
 
 ## TODO
 
-1. 将语料写入数据库
+1. ~~将语料写入数据库~~
 2. ~~实现项目数据文件初始化~~
 3. 实现复习时暂时跳过
 4. Electron实现应用程序

@@ -1,7 +1,7 @@
 '''
 @Author: Gao S
 @Date: 2020-07-06 08:49:36
-@LastEditTime: 2020-07-12 19:03:13
+@LastEditTime: 2020-07-12 20:30:51
 @Description: 该文件主要是操作数据库及用户信息文件相关代码
 @FilePath: /English-Translation/database.py
 '''
@@ -328,7 +328,7 @@ class CorpusDB(object):
             str, str: 中文句子和英文句子，为空或者出错返回None
         """
         if int(question_id) > self.__corpus_len:
-            logging.error('数据库检索时题号超出总长: ' + str(question_id))
+            logging.info('数据库检索时题号超出总长: ' + str(question_id))
             return None, None
         
         try:

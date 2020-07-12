@@ -1,7 +1,7 @@
 '''
 @Author: Gao S
 @Date: 2020-07-10 21:54:11
-@LastEditTime: 2020-07-12 18:00:09
+@LastEditTime: 2020-07-12 20:31:05
 @Description: 交互式命令行的实现
 @FilePath: /English-Translation/interaction.py
 '''
@@ -11,6 +11,9 @@ from cmd import Cmd
 
 from user_info import UserInfo
 from database import userIdDb
+
+import logging
+logging.basicConfig(level=logging.WARNING)
 
 class InteractionState(Enum):
     start = 0
@@ -52,7 +55,7 @@ class InteractionMachine(Machine):
                          transitions=transitions)
     
 class Interaction(Cmd):
-    intro = '欢迎来到Learning-English-By-Translation.'
+    intro = "欢迎来到Learning-English-By-Translation.\n请登录(login)/注册(register): "
     prompt = 'Translater >'
     __interactionMachine = InteractionMachine()
     userInfo = None
@@ -79,6 +82,7 @@ class Interaction(Cmd):
                 self.userInfo = UserInfo(user_id)
                 self.__interactionMachine.login()
                 self.__interactionMachine.study()
+                self.print_cur_cmd()
         else:
             print('不能登录')
             self.print_cur_cmd()
@@ -97,6 +101,7 @@ class Interaction(Cmd):
                 self.userInfo = UserInfo(user_id)
                 self.__interactionMachine.register()
                 self.__interactionMachine.study()
+                self.print_cur_cmd()
         else:
             print('不能注册')
             self.print_cur_cmd()
@@ -119,6 +124,7 @@ class Interaction(Cmd):
             self.__question_id = question_id
             
             self.__interactionMachine.learnnew()
+            self.print_cur_cmd()
         else:
             print('不能学习新题目')
             self.print_cur_cmd()
@@ -142,6 +148,7 @@ class Interaction(Cmd):
             self.__complexity = complexity
             
             self.__interactionMachine.review()
+            self.print_cur_cmd()
         else:
             print('不能复习旧题目')
             self.print_cur_cmd()
@@ -167,6 +174,7 @@ class Interaction(Cmd):
                 self.userInfo.insert_question(self.__question_id, answer, self.__complexity, move_level=int(move_level))
             self.__interactionMachine.answer()
             self.__interactionMachine.study()
+            self.print_cur_cmd()
         else:
             print('不能回答问题')
             self.print_cur_cmd()
@@ -181,6 +189,7 @@ class Interaction(Cmd):
                 
             self.__interactionMachine.skip()           
             self.__interactionMachine.study()
+            self.print_cur_cmd()
         else:
             print('不能跳过')
             self.print_cur_cmd()
@@ -198,8 +207,8 @@ class Interaction(Cmd):
     def parse_cmd(self, cmd):
         pass
     
-    def preloop(self):
-        print('请登录(login)/注册(register): ')
+    # def preloop(self):
+    #     print('请登录(login)/注册(register): ')
     
     def emptyline(self):
         pass
@@ -210,9 +219,9 @@ class Interaction(Cmd):
         
     def print_cur_cmd(self):
         if self.__interactionMachine.is_start():
-            print('请登录(login)/注册(register)')
+            print('请登录(login)/注册(register)/退出(exit)')
         elif self.__interactionMachine.is_study():
-            print('请选择学习新题目(new)/复习(review)')
+            print('请选择学习新题目(new)/复习(review)/退出(exit)')
         elif self.__interactionMachine.is_learnnew():
             print('请选择回答(answer)/跳过(skip)')
         elif self.__interactionMachine.is_review():
