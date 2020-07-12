@@ -13,18 +13,18 @@ python3 interaction.py
 
 随后根据提醒操作
 
-![运行截图](https://github.com/g101418/Learning-English-By-Translation/blob/master/screenshot.png)
+![运行截图](https://github.com/g101418/Learning-English-By-Translation/blob/master/images/screenshot.png)
 
 ## 结构
 
-![user_info结构图](https://github.com/g101418/Learning-English-By-Translation/blob/master/user_info_json.png)
+![user_info结构图](https://github.com/g101418/Learning-English-By-Translation/blob/master/images/user_info_json.png)
 
 用户信息的json文件格式，复习时从最高难度的题目开始，直到复习完毕
 
 
 
 
-![状态转换图](https://github.com/g101418/Learning-English-By-Translation/blob/master/state_transition_diagram.png)
+![状态转换图](https://github.com/g101418/Learning-English-By-Translation/blob/master/images/state_transition_diagram.png)
 
 在交互式命令行中，有限状态机的设计
 
