@@ -1,7 +1,7 @@
 '''
 @Author: Gao S
 @Date: 2020-07-12 17:59:27
-@LastEditTime: 2020-07-12 19:55:45
+@LastEditTime: 2020-07-12 19:58:14
 @Description: 初始化项目DB及将语料写入数据库
 @FilePath: /English-Translation/setup_db.py
 '''
@@ -53,8 +53,8 @@ def insert_corpus_many(corpus: list):
 
 if __name__ == '__main__':
     setup()
-    corpus = [
-        ('你好', 'hello'),
-        ('你是谁？', 'Who are you?')
-    ]
-    insert_corpus_many(corpus)
+    # corpus = [
+    #     ('你好', 'hello'),
+    #     ('你是谁？', 'Who are you?')
+    # ]
+    # insert_corpus_many(corpus)
