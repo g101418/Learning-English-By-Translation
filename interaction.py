@@ -1,8 +1,8 @@
 '''
 @Author: Gao S
 @Date: 2020-07-10 21:54:11
-@LastEditTime: 2020-07-11 00:20:56
-@Description: 
+@LastEditTime: 2020-07-12 18:00:09
+@Description: 交互式命令行的实现
 @FilePath: /English-Translation/interaction.py
 '''
 from transitions import Machine

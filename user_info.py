@@ -1,8 +1,8 @@
 '''
 @Author: Gao S
 @Date: 2020-07-06 17:22:08
-@LastEditTime: 2020-07-11 00:32:08
-@Description: 
+@LastEditTime: 2020-07-12 18:00:17
+@Description: 操作用户信息
 @FilePath: /English-Translation/user_info.py
 '''
 

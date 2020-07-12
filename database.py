@@ -1,8 +1,8 @@
 '''
 @Author: Gao S
 @Date: 2020-07-06 08:49:36
-@LastEditTime: 2020-07-11 00:42:39
-@Description: 
+@LastEditTime: 2020-07-12 19:03:13
+@Description: 该文件主要是操作数据库及用户信息文件相关代码
 @FilePath: /English-Translation/database.py
 '''
 import json
@@ -13,8 +13,8 @@ import sqlite3 as sqlite
 import sys
 import re
 
-import configparser
-config = configparser.ConfigParser()
+from configparser import ConfigParser, ExtendedInterpolation
+config = ConfigParser(interpolation=ExtendedInterpolation())
 config.read('./config.ini')
 
 class UserIdDB(object):
